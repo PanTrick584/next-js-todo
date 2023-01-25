@@ -1,7 +1,7 @@
 export const getDay = (day: number): string => {
-    return day === 0
+    return day === 1
         ? "Poniedziałek"
-        : day === 1
+        : day === 2
         ? "Wtorek"
         : day === 3
         ? "Środa"
@@ -54,7 +54,7 @@ export const summaryDate = (): string => {
     const currentDay = getDay(day);
     const currentMonth = getMonth(month);
 
-    const summaryDate = `${currentDay} - ${dayOfMonth} ${currentMonth} - ${year}`;
+    const summaryDate = `${currentDay} / ${dayOfMonth} ${currentMonth} / ${year}`;
 
     return summaryDate;
 };

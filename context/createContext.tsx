@@ -9,41 +9,40 @@ import {
 } from "react";
 
 interface GoalItem {
-    text: string;
+    id: string;
+    title: string;
+    description: string;
     date: string;
+    goalID: number;
 }
 
 interface MainState {
-    todos: string[];
+    todos: GoalItem[];
     goals: GoalItem[];
     goalsDates: string[];
-    setTodos: Dispatch<SetStateAction<string[]>>;
+    uniqueID: number;
+    setTodos: Dispatch<SetStateAction<GoalItem[]>>;
     setGoals: Dispatch<SetStateAction<GoalItem[]>>;
     setGoalsDates: Dispatch<SetStateAction<string[]>>;
+    setUniqueID: Dispatch<SetStateAction<number>>;
 }
 
 export const MainContext = createContext<MainState | null>(null);
 
 export const ContextAPI = ({ children }: { children: ReactNode }) => {
-    const [todos, setTodos] = useState<string[]>([]);
+    const [todos, setTodos] = useState<GoalItem[]>([]);
     const [goalsDates, setGoalsDates] = useState<string[]>([]);
-    const [goals, setGoals] = useState<GoalItem[]>([
-        { text: "ajajajajaj", date: "Piątek - 17 Stycznia - 2023" },
-        { text: "ajajajajaj", date: "Piątek - 17 Stycznia - 2023" },
-        { text: "ajajajajaj", date: "Piątek - 17 Stycznia - 2023" },
-        { text: "ajajajajaj", date: "Piątek - 12 Stycznia - 2023" },
-        { text: "ajajajajaj", date: "Piątek - 12 Stycznia - 2023" },
-    ]);
+    const [goals, setGoals] = useState<GoalItem[]>([]);
+    const [uniqueID, setUniqueID] = useState<number>(0);
 
     useEffect(() => {
-        let uniq = goals
-            .filter(
-                ({ date }, index, a) =>
-                    a.findIndex((e) => date === e.date) === index
-            )
-            .map((goal) => goal.date);
+        let uniq = todos
+            .filter(({ date }, index, a) => {
+                console.log(date);
 
-        console.log(uniq);
+                return a.findIndex((e) => date === e.date) === index;
+            })
+            .map((goal) => goal.date);
 
         setGoalsDates(uniq);
     }, []);
@@ -60,6 +59,8 @@ export const ContextAPI = ({ children }: { children: ReactNode }) => {
                 setGoals,
                 goalsDates,
                 setGoalsDates,
+                uniqueID,
+                setUniqueID,
             }}
         >
             {children}
