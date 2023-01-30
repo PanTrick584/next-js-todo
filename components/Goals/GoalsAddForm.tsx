@@ -1,6 +1,12 @@
 import { useContextAPI } from "@/context/createContext";
+import { endpoint } from "@/graphql/ApolloClient";
 import { summaryDate } from "@/utils/const";
+import { gql } from "@apollo/client";
 import { useState } from "react";
+
+// export default function GoalsAddForm({
+//     data,
+// }: InferGetStaticPropsType<typeof getStaticProps>) {
 
 export const GoalsAddForm = () => {
     const [addGoal, setAddGoal] = useState<string>("");
@@ -65,4 +71,42 @@ export const GoalsAddForm = () => {
             </button>
         </>
     );
+};
+
+interface StoreAPIQL {
+    goals: Product[];
+}
+
+interface Product {
+    id: string;
+    title: string;
+    description: string;
+    date: string;
+    goalID: number;
+}
+
+export const getStaticProps = async () => {
+    // można ustawić ilość elementów przy pierwszym zapytaniu
+    // to dobre wyzwanie żeby wyświetlać tylko te z bieżącego tygodnia i o ograniczonej ilości?
+    const { data } = await endpoint.query<StoreAPIQL>({
+        query: gql`
+            query Goals {
+                goals(first: 50) {
+                    createdAt
+                    date
+                    description
+                    display
+                    goalID
+                    id
+                    title
+                }
+            }
+        `,
+    });
+
+    return {
+        props: {
+            data,
+        },
+    };
 };

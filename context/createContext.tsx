@@ -7,6 +7,9 @@ import {
     useEffect,
     useState,
 } from "react";
+import { endpoint } from "@/graphql/ApolloClient";
+import { gql } from "@apollo/client";
+import { InferGetStaticPropsType } from "next";
 
 interface GoalItem {
     id: string;
@@ -35,20 +38,14 @@ export const ContextAPI = ({ children }: { children: ReactNode }) => {
     const [goals, setGoals] = useState<GoalItem[]>([]);
     const [uniqueID, setUniqueID] = useState<number>(0);
 
-    useEffect(() => {
-        let uniq = todos
-            .filter(({ date }, index, a) => {
-                console.log(date);
+    // useEffect(() => {
 
-                return a.findIndex((e) => date === e.date) === index;
-            })
-            .map((goal) => goal.date);
+    // }, []);
 
-        setGoalsDates(uniq);
-    }, []);
+    // if (goals.length !== 0) {
+    // }
 
-    if (goals.length !== 0) {
-    }
+    // console.log(goals);
 
     return (
         <MainContext.Provider
