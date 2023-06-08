@@ -1,6 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  reactStrictMode: true,
-}
+    reactStrictMode: true,
+    // assetPrefix: "/my-custom-path/",
+};
 
-module.exports = nextConfig
+module.exports = nextConfig;

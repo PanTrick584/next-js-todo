@@ -5,7 +5,9 @@ import { summaryDate } from "@/utils/const";
 export default function Home() {
     return (
         <>
-            <Main>Dziś jest {summaryDate()}</Main>
+            <Main>
+                <div className={styles.mainDate}>Dziś jest {summaryDate()}</div>
+            </Main>
         </>
     );
 }

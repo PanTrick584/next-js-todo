@@ -4,6 +4,7 @@ import { summaryDate } from "@/utils/const";
 import { gql, useQuery } from "@apollo/client";
 import { InferGetStaticPropsType } from "next";
 import React, { useEffect, useState, ReactNode } from "react";
+import styles from "../styles/Home.module.css";
 
 interface newTodoMutation {
     title: string;
@@ -12,9 +13,6 @@ interface newTodoMutation {
 }
 
 export default function ProductsPage() {
-    // export default function ProductsPage({
-    //     data,
-    // }: InferGetStaticPropsType<typeof getStaticProps>) {
     const goalsDate = summaryDate();
 
     const [todoMutation, setTodoMutation] = useState<newTodoMutation>({
@@ -29,21 +27,10 @@ export default function ProductsPage() {
     const todoUniqueDates = useContextAPI().goalsDates;
     const setTodoUniqueDates = useContextAPI().setGoalsDates;
 
-    useEffect(() => {
-        // setGoalsContextAPI(data.goals);
-        // setGoalsContextAPI();
-        // sendQuery();
-        // let uniq = goalsContextAPI
-        //     .filter(({ date }, index, a) => {
-        //         return a.findIndex((e) => date === e.date) === index;
-        //     })
-        //     .map((goal) => goal.date);
-        // setTodoUniqueDates(uniq);
-        // todosQuery();
-    }, []);
+    useEffect(() => {}, []);
 
     useEffect(() => {
-        populateTODO();
+        // todosQuery(dataTodo);
     }, [newData]);
 
     const {
@@ -63,8 +50,6 @@ export default function ProductsPage() {
             }
         }
     `);
-
-    loading && console.log(dataTodo?.goals);
 
     const MUTATION_SEND = gql`
         mutation AddGoal($goal: GoalCreateInput!) {
@@ -138,56 +123,49 @@ export default function ProductsPage() {
         });
     };
 
+    const deleteTODO = (id: string) => {
+        console.log(id);
+        console.log("delete this todo");
+    };
+
     const todosQuery = (data: StoreAPIQL) => {
         let uniq = data.goals.filter(
             ({ date }, index, a) =>
                 a.findIndex((e) => date === e.date) === index
         );
-        // let unique = data.goals.find((uniqueDate): boolean => {
-        //     // console.log(uniq);
 
-        //     let newUniqueDate = uniqueDate.date === goalsDate ? true : false;
-        //     return newUniqueDate;
-        // });
-        console.log(uniq);
-        return uniq.map(({ date }) => {
+        return uniq.map(({ date, id }) => {
             return (
-                <div>
-                    <h2>{date} </h2>
-                    {data.goals.map((goal) => {
-                        if (date === goal.date)
-                            return (
-                                <div>
-                                    <h3>{goal.title}</h3>
-                                    <p>{goal.description}</p>
-                                </div>
-                            );
-                    })}
+                <div className={styles.date} key={id} id={`date-${id}`}>
+                    <h2 className={styles.dateHeader}>{date} </h2>
+                    {data.goals.map(
+                        ({ title, description, id: gID, date: gDate }) => {
+                            if (date === gDate)
+                                return (
+                                    <div className={styles.todo}>
+                                        <div className={styles.todoBox}>
+                                            <h3
+                                                className={styles.todoBoxHeader}
+                                            >
+                                                {title}
+                                            </h3>
+                                            <button
+                                                className={styles.todoButton}
+                                                onClick={() => deleteTODO(gID)}
+                                            >
+                                                DONE
+                                            </button>
+                                        </div>
+                                        <p className={styles.todoDescription}>
+                                            {description}
+                                        </p>
+                                    </div>
+                                );
+                        }
+                    )}
                 </div>
             );
         });
-    };
-
-    const sendQuery = async () => {
-        const { data } = await endpoint.query<StoreAPIQL>({
-            query: gql`
-                query Goals {
-                    goals(first: 50) {
-                        createdAt
-                        date
-                        description
-                        display
-                        goalID
-                        id
-                        title
-                    }
-                }
-            `,
-        });
-
-        console.log(data.goals);
-
-        return setGoalsContextAPI(data.goals);
     };
 
     const addMutation = async () => {
@@ -198,7 +176,7 @@ export default function ProductsPage() {
             },
         });
 
-        const dataID = await endpoint.mutate({
+        await endpoint.mutate({
             mutation: MUTATION_PUBLISH,
             variables: {
                 where: { id: dataSend.data.goal.id },
@@ -206,95 +184,55 @@ export default function ProductsPage() {
             },
         });
 
-        // mógłbym wykonywać to query tylko do elementów, których nie mam
-        // const newQuery = sendQuery();
-
-        // const newQueryData = (await newQuery).data.goals;
-
-        // setGoalsContextAPI(newQueryData);
-        // setNewData(!newData);
-
-        // console.log(dataSend.data.goal.id);
-        // console.log(dataID);
-        // console.log(newQueryData);
+        setNewData(true);
     };
 
-    console.log(goalsContextAPI);
-    console.log("Daty: " + todoUniqueDates);
+    console.log(dataTodo);
 
-    if (loading) {
-        console.log(loading);
-
-        return <div>Loading...</div>;
-    }
+    if (loading) return <div>Loading...</div>;
+    if (error) return <div>Coś zepsułem...:/</div>;
 
     return (
         <div>
-            <label htmlFor="todo-title">
-                <input
-                    onChange={(e) =>
-                        setTodoMutation((prev) => ({
-                            ...prev,
-                            title: e.target.value,
-                        }))
-                    }
-                    value={todoMutation.title}
-                    type="text"
-                    name="todo-title"
-                />
-            </label>
-            <label htmlFor="todo-description">
-                <textarea
-                    onChange={(e) =>
-                        setTodoMutation((prev) => ({
-                            ...prev,
-                            description: e.target.value,
-                        }))
-                    }
-                    value={todoMutation.description}
-                    name="todo-description"
-                />
-            </label>
-            <button onClick={() => addMutation()}>DODAJ CEL</button>
+            <div className={styles.todoForm}>
+                <label htmlFor="todo-title">
+                    <input
+                        className={styles.todoFormInput}
+                        onChange={(e) =>
+                            setTodoMutation((prev) => ({
+                                ...prev,
+                                title: e.target.value,
+                            }))
+                        }
+                        value={todoMutation.title}
+                        type="text"
+                        name="todo-title"
+                    />
+                </label>
+                <label htmlFor="todo-description">
+                    <textarea
+                        className={styles.todoFormDescription}
+                        onChange={(e) =>
+                            setTodoMutation((prev) => ({
+                                ...prev,
+                                description: e.target.value,
+                            }))
+                        }
+                        value={todoMutation.description}
+                        name="todo-description"
+                        style={{ width: "100%" }}
+                    />
+                </label>
+                <button
+                    className={styles.todoFormButton}
+                    onClick={() => addMutation()}
+                >
+                    DODAJ CEL
+                </button>
+            </div>
             {todosQuery(dataTodo)}
-            {/* {dataTodo?.goals.map((goal: Product) => (
-                <div>{goal.title}</div>
-            ))} */}
         </div>
     );
-
-    // return (
-    //     <div>
-    //         <label htmlFor="todo-title">
-    //             <input
-    //                 onChange={(e) =>
-    //                     setTodoMutation((prev) => ({
-    //                         ...prev,
-    //                         title: e.target.value,
-    //                     }))
-    //                 }
-    //                 value={todoMutation.title}
-    //                 type="text"
-    //                 name="todo-title"
-    //             />
-    //         </label>
-    //         <label htmlFor="todo-description">
-    //             <textarea
-    //                 onChange={(e) =>
-    //                     setTodoMutation((prev) => ({
-    //                         ...prev,
-    //                         description: e.target.value,
-    //                     }))
-    //                 }
-    //                 value={todoMutation.description}
-    //                 name="todo-description"
-    //             />
-    //         </label>
-    //         <button onClick={() => addMutation()}>DODAJ CEL</button>
-
-    //         {populateTODO()}
-    //     </div>
-    // );
 }
 
 interface StoreAPIQL {

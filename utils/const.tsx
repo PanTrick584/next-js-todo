@@ -54,7 +54,7 @@ export const summaryDate = (): string => {
     const currentDay = getDay(day);
     const currentMonth = getMonth(month);
 
-    const summaryDate = `${currentDay} / ${dayOfMonth} ${currentMonth} / ${year}`;
+    const summaryDate = `${currentDay} /\n ${dayOfMonth} ${currentMonth} /\n ${year}`;
 
     return summaryDate;
 };
