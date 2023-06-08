@@ -103,10 +103,10 @@ export default function ProductsPage() {
         // });
         console.log(todoUniqueDates);
 
-        return todoUniqueDates.map((todoDate) => {
+        return todoUniqueDates.map((todoDate, id) => {
             console.log(goalsContextAPI);
             return (
-                <div>
+                <div key={"todo-"+id}>
                     <h2>{todoDate} </h2>
 
                     {goalsContextAPI.map((goal) => {

@@ -12,11 +12,12 @@ import { gql } from "@apollo/client";
 import { InferGetStaticPropsType } from "next";
 
 interface GoalItem {
+    text?: string;
     id: string;
-    title: string;
-    description: string;
-    date: string;
-    goalID: number;
+    title?: string;
+    description?: string;
+    date?: string;
+    goalID?: number;
 }
 
 interface MainState {

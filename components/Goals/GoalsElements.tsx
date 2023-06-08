@@ -8,7 +8,7 @@ export const GoalElements = () => {
 
     const deleteGoalHandler = (goalID: number) => {
         let filteredGoals = goalsContextAPI.filter(
-            (goal) => goal.id !== goalID
+            (goal) => parseInt(goal.id) !== goalID
         );
         setGoalsContextAPI(() => [...filteredGoals]);
     };
@@ -26,7 +26,7 @@ export const GoalElements = () => {
                                         <p>{goal.text}</p>
                                         <button
                                             onClick={() =>
-                                                deleteGoalHandler(goal.id)
+                                                deleteGoalHandler(parseInt(goal.id))
                                             }
                                         >
                                             USUŃ
