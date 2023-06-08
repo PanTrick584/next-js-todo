@@ -142,7 +142,7 @@ export default function ProductsPage() {
                         ({ title, description, id: gID, date: gDate }) => {
                             if (date === gDate)
                                 return (
-                                    <div className={styles.todo}>
+                                    <div key={"uniq-" + id + gID} className={styles.todo}>
                                         <div className={styles.todoBox}>
                                             <h3
                                                 className={styles.todoBoxHeader}
